@@ -4,143 +4,94 @@
                      [repltest-read-syntax read-syntax]
                      [repltest-get-info get-info]))
 
-(require syntax/module-reader)
+(require syntax/module-reader
+         racket/syntax
+         rackunit)
 
-#;(define (repltest-read in)
-    (syntax->datum
-     (repltest-read-syntax #f in)))
+(define (read-pre-prompt in)
+  (regexp-try-match #px"^\\s*" in))
 
-(define (read-prompt in)
-  (regexp-try-match #px"^\\s*[0-9]> " in))
+(define (read-actual-prompt in)
+  (regexp-try-match #px"^> " in))
 
-(define (read-user-input reader args)
-  (apply reader args))
+(define (peak-prompt in)
+  (regexp-try-match #px"^\\s*> " (peeking-input-port in)))
 
-(define (read-output-values reader args in)
-  (if (read-prompt in)
-      '()
-      (let ([rs (apply reader args)])
-        (if (eof-object? rs)
-            '()
-            (read-output-values reader args in)))))
+(define (skip-newline in)
+  (regexp-try-match #px"^\n" in))
 
-#;(let ([is (open-input-string "(+ 1 1) 'aaa")]
-        [os (open-output-string)])
-    (parameterize ([current-get-interaction-input-port
-                    (λ () is)]
-                   [current-namespace (make-base-namespace)]
-                   [current-output-port os]
-                   [current-error-port os]
-                   [current-print (λ (v)
-                                    (unless (void? v)
-                                      (print v)
-                                      (newline)))])
-      (read-eval-print-loop))
-    
-    (display (get-output-string os)))
+(define (peek-read-length in)
+  (let* ([pk (peeking-input-port in)]
+         [start (file-position pk)]
+         [r (read pk)]
+         [end (file-position pk)])
+    (- end start)))
 
+(define (narrow-next-read in)
+  (make-limited-input-port in (peek-read-length in)))
 
-
-#;(define-values (wrap-read wrap-read-syntax)
-    (let ()
-      (define (wrap default-reader reader src in . args)
-        ;(displayln (apply default-reader args))
-        ;((λ (x) (displayln x) x) (apply reader args))
-        (displayln args)
-        ((λ (x) (displayln x) x)
-         (apply reader src in (cddr args)));;TODO: not cddr for read
-        #;#`(module m typed/racket
-              '#,(default-reader src in))
-        #;(let* ([in (if (null? (cdr args)) (car args) (cadr args))]
-                 [maybe-prompt (read-prompt in)])
-            (if maybe-prompt
-                ((λ (x) (displayln x) x) (apply reader args))
-                ((λ (x) (displayln x) x) (apply reader args))))
-        #;(let* ([in (if (null? (cdr args)) (car args) (cadr args))]
-                 [first-prompt (read-prompt in)]
-                 [user-input (read-user-input reader args)]
-                 [output-values (read-output-values reader args in)])
-            (if first-prompt
-                #`(module anything racket
-                    '(check-equal? #,user-input
-                                   (values . #,output-values))
-                    (let ([os (open-output-string)])
-                      (parameterize ([current-input-port (open-input-string "")]
-                                     [current-output-port os])
-                        'todo
-                        (get-output-string os))))
-                #'(module anything racket #f))))
-      (values (λ (reader)
-                (λ args
-                  (apply wrap read reader #f (car args) args)))
-              (λ (reader)
-                (λ args
-                  (apply wrap
-                         read-syntax
-                         reader
-                         (car args)
-                         (cadr args)
-                         args))))))
-
-(define (read-one-interaction src in)
-  (let ([prompt (read-prompt in)])
-    (if (not prompt)
-        (values eof #f '())
-        (let ([user-input (read-syntax src in)]
-              [output-values (let loop ()
-                               (if (read-prompt (peeking-input-port in))
-                                   '()
-                                   (let ([val (read-syntax src in)])
-                                     (if (eof-object? val)
-                                         '()
-                                         (cons val (loop))))))])
-          (if (eof-object? user-input)
-              (values (car prompt) #f '())
-              (values (car prompt) user-input output-values))))))
-
-(define ((wrap-reader reader) chr in src line col pos)
+(define (peak-until-prompt-length in)
   (let* ([pk (peeking-input-port in)]
          [start (file-position pk)]
          [end (let loop ()
-                (let* ([pos (file-position pk)]
-                       [pr (read-prompt pk)])
+                (let* ([pre (read-pre-prompt pk)]
+                       [pos (file-position pk)]
+                       [pr (read-actual-prompt pk)])
                   (if (or pr (eof-object? (read pk)))
                       pos
                       (loop))))])
-    (with-syntax ([(mod nm . body)
-                   (reader chr
-                           (make-limited-input-port in (- end start))
-                           src line col pos)])
-      (let loop ()
-        (let-values ([(p u o) (read-one-interaction src in)])
-          (when u
-            ;(display p)
-            ;(displayln (syntax->datum u))
-            ;(map displayln (map syntax->datum o))
-            (loop))))
-      ;; Run interactions:
-      (let ([is (open-input-string "x y (number->string (+ 1 1))")]
-            [os (open-output-string)]
-            [ns (make-base-namespace)])
-        (eval #'(mod nm . body) ns)
-        ;; This is a hack because I can't get (module->namespace ''m) to work:
-        (define mod-ns (eval #'(begin (require racket/enter)
-                                      (enter! 'nm #:dont-re-require-enter)
-                                      (current-namespace))
-                             ns))
-        (parameterize ([current-get-interaction-input-port
-                        (λ () is)]
-                       [current-namespace mod-ns]
-                       [current-output-port os]
-                       [current-error-port os]
-                       [current-print (λ (v)
-                                        (unless (void? v)
-                                          (print v)
-                                          (newline)))])
-          (read-eval-print-loop))
-        
-        (display (get-output-string os)))
-      #'(mod nm racket) #;#'(mod nm . body))))
+    (- end start)))
+
+(define (narrow-until-prompt in)
+  (make-limited-input-port in (peak-until-prompt-length in)))
+
+(define silent-prompt-read
+  (λ ()
+    ;; Default current-prompt-read, without showing
+    ;; the prompt
+    (let ([in ((current-get-interaction-input-port))])
+      ((current-read-interaction) (object-name in) in))))
+
+(define (run-interactions mod-stx in-rest)
+  (define/with-syntax (mod nm . body) mod-stx)
+  (let ([ns (make-base-namespace)])
+    (eval mod-stx ns)
+    ;; This is a hack because I can't get (module->namespace ''m) to work:
+    (define mod-ns (eval #'(begin (require racket/enter)
+                                  (enter! 'nm #:dont-re-require-enter)
+                                  (current-namespace))
+                         ns))
+    (let loop ()
+      (let* ([pr (read-actual-prompt in-rest)])
+        (when pr
+          (let* ([narrowed (narrow-next-read in-rest)]
+                 [os (open-output-string)]
+                 [actual (parameterize
+                             ([current-prompt-read
+                               silent-prompt-read]
+                              [current-get-interaction-input-port
+                               (λ () narrowed)]
+                              [current-namespace mod-ns]
+                              [current-output-port os]
+                              [current-error-port os]
+                              [current-print (λ (v)
+                                               (unless (void? v)
+                                                 (print v)
+                                                 (newline)))])
+                           (read-eval-print-loop)
+                           (get-output-string os))]
+                 [skip (skip-newline in-rest)]
+                 [expected (port->string (narrow-until-prompt in-rest))])
+            (check-equal? actual
+                          expected))
+          (loop))))))
+
+(define ((wrap-reader reader) chr in src line col pos)
+  (define/with-syntax (mod nm . body)
+    (reader chr (narrow-until-prompt in) src line col pos))
+  ;; Run interactions:
+  (run-interactions #'(mod nm . body) in)
+  #'(mod nm . body))
 
 (define-values (repltest-read repltest-read-syntax repltest-get-info)
   (make-meta-reader
@@ -162,33 +113,3 @@
        (define (fallback) (if proc (proc key defval) defval))
        (case key
          [else (fallback)])))))
-
-
-#|
-#lang racket
-(let ([is (open-input-string "x y (number->string (+ 1 1))")]
-      [os (open-output-string)]
-      [ns (make-base-namespace)])
-  (eval #'(module m typed/racket
-            (define x 0)
-            (define y 1)
-            'displayed
-            (displayln "aaaa"))
-        ns)
-  (define mod-ns (eval #'(begin (require racket/enter)
-                                (enter! 'm #:dont-re-require-enter)
-                                (current-namespace))
-                       ns))
-  (parameterize ([current-get-interaction-input-port
-                  (λ () is)]
-                 [current-namespace mod-ns]
-                 [current-output-port os]
-                 [current-error-port os]
-                 [current-print (λ (v)
-                                  (unless (void? v)
-                                    (print v)
-                                    (newline)))])
-    (read-eval-print-loop))
-  
-  (display (get-output-string os)))
-|#

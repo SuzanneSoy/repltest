@@ -6,20 +6,17 @@
 'displayed
 (displayln "displayed too")
 
-1> (+ 1 1)
+> (+ 1 1)
+- : Integer [more precisely: Positive-Index]
 2
-2> x
+> x
+- : Integer [more precisely: Zero]
 0
-
-3> (values x y)
+> (values x y)
+- : (values Integer Integer) [more precisely: (Values Zero One)]
 0
 1
-4> #R(+ 2 0)
+> #R(+ 2 0)
 (+ 2 0) = 2
+- : Integer [more precisely: Positive-Byte]
 2
-
-#|
-(values (+ 1 1) 4)
-#R(+ 2 0)
-4
-|#
