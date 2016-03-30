@@ -21,3 +21,6 @@
 > (+ 2 0)
 - : Integer [more precisely: Positive-Byte]
 2
+> (map add1 '(1 2 3 4))
+- : (Listof Positive-Index) [more precisely: (Pairof Positive-Index (Listof Positive-Index))]
+'(2 3 4 5)
