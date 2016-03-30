@@ -1,4 +1,5 @@
 #lang debug repltest typed/racket
+
 ;; There is a problem if there is a comment before a prompt, as comments aren't
 ;; gobbled-up by the preceeding read.
 (define x 0)
