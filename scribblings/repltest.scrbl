@@ -104,7 +104,7 @@ Later versions of this package will allow customizing the following aspects:
 
 @itemlist[
  @item{Flexibility of whitespace comparisons (strip leading
-  and trailing whitespace, or ignoring all whitespace
+  and trailing whitespace, or ignore all whitespace
   differences).}
  @item{Support comments before and inside the REPL
   transcript.}
