@@ -46,9 +46,8 @@
 (define (narrow-until-prompt in)
   (make-limited-input-port in (peak-until-prompt-length in)))
 
+;; Just like the default `current-prompt-read`, but without showing the prompt.
 (define silent-prompt-read
   (λ ()
-    ;; Default current-prompt-read, without showing
-    ;; the prompt
     (let ([in ((current-get-interaction-input-port))])
       ((current-read-interaction) (object-name in) in))))
