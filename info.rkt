@@ -2,6 +2,7 @@
 (define collection "repltest")
 (define deps '("base"
                "rackunit-lib"
+               "typed-racket-lib"
                "debug"))
 (define build-deps '("scribble-lib" "racket-doc"))
 (define scribblings '(("scribblings/repltest.scrbl" ())))
