@@ -8,14 +8,15 @@
          rackunit
          repltest/private/util)
 
-(define (run-interactions in-rest varref)
-  (define res-mod
-    (module-path-index-resolve
-     (module-path-index-join '(submod "..")
-                             (variable-reference->module-path-index varref))))
-  (dynamic-require res-mod #f)
-  (define mod-ns (module->namespace res-mod))
-  (run-interactions2 in-rest mod-ns))
+(define-syntax-rule (run-interactions in-rest varref)
+  (begin
+    (require (prefix-in "main-mod:" (submod "..")))
+    (define res-mod
+      (module-path-index-resolve
+       (module-path-index-join '(submod "..")
+                               (variable-reference->module-path-index varref))))
+    (define mod-ns (module->namespace res-mod))
+    (run-interactions2 in-rest mod-ns)))
 
 (define (run-interactions2 in-rest mod-ns)
   (let loop ()

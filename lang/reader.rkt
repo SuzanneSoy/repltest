@@ -19,6 +19,7 @@
                        (variable-reference->namespace (#%variable-reference)))])
     #`(mod nam lang
            (modbeg
+            (module code racket/base)
             (module* test racket/base
               (require repltest/private/run-interactions)
               (run-interactions (open-input-string #,(port->string in))

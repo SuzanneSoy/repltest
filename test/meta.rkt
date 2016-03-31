@@ -4,6 +4,8 @@
 ;; gobbled-up by the preceeding read.
 (define x 0)
 (define (y) #R(- 3 2))
+(define-syntax (module->namespace stx) #'error)
+(provide module->namespace)
 'displayed
 (displayln "displayed too")
 
