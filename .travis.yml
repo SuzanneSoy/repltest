@@ -50,9 +50,9 @@ before_script:
 script:
  - raco pkg install --deps search-auto
  - raco test -x -p repltest
+ - raco setup --check-pkg-deps --pkgs repltest
 
 after_success:
- - raco setup --check-deps repltest
  - raco pkg install --deps search-auto cover-coveralls
  - raco pkg install --deps search-auto
  - raco cover -b -f coveralls -d $TRAVIS_BUILD_DIR/coverage .
