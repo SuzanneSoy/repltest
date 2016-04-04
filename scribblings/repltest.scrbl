@@ -93,10 +93,11 @@ prompt being preceded by a comment.
 @section{Warning concerning spaces and newlines}
 
 The tests are space-sensitive, so care should be taken to
-include a newline at the end of the file, as in most
-languages, the REPL prints a newline after the result.
-Furthermore, extra spacing like blank lines should not be
-added after the first prompt.
+include a newline at the end of the file. This is due to
+the fact that in most languages, the REPL prints a newline
+after the result. Furthermore, extra spacing like blank
+lines should not be added in the transcript part of the
+file.
 
 @section{Future improvements}
 
@@ -113,7 +114,7 @@ Later versions of this package will allow customizing the following aspects:
   part of it (and therefore will be part of the preceding
   result or main module's code).}
  @item{Disable calling @racket[read] on the output
-  expressions, which can be useful when the output contain
+  expressions, which can be useful when the output contains
   unbalanced parenthesis, or do not otherwise match the
   language's syntax, for example:
   
