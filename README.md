@@ -1,20 +1,35 @@
+[![Build Status,](https://img.shields.io/travis/jsmaniac/repltest/master.svg)](https://travis-ci.org/jsmaniac/repltest)
+[![Coverage Status,](https://img.shields.io/coveralls/jsmaniac/repltest/master.svg)](https://coveralls.io/github/jsmaniac/repltest)
+[![Build Stats,](https://img.shields.io/badge/build-stats-blue.svg)](http://jsmaniac.github.io/travis-stats/#jsmaniac/repltest)
+
 REPLtest
 ========
 
-This package provides the `#lang repltest` meta-language, which can be used to turn the transcript of an interactive racket session into a series of tests.
+This package provides the `#lang repltest` meta-language, which can be
+used to turn the transcript of an interactive racket session into a
+series of tests.
 
-Usage:
+Installation
+------------
+
+Install thiw package with:
 
 ```
 raco pkg install repltest
 ```
 
-Then write a file using the repltest meta-language, containing definitions at the top and interactions after the first prompt (by default the prompt is `"> "`, I will add customization options later).
+Usage
+-----
+
+Then write a file using the repltest meta-language, containing
+definitions at the top and interactions after the first prompt (by
+default the prompt is `"> "`, I will add customization options later).
 
 ```
 #lang debug repltest typed/racket
-;; There is a problem if there is a comment before a prompt, as comments aren't
-;; gobbled-up by the preceeding read.
+;; There is a problem if there is a comment before a prompt, as comments
+;; are not gobbled-up by the preceeding read. This will be fixed in a
+;; later version.
 (define x 0)
 (define y 1)
 'displayed
@@ -35,3 +50,7 @@ Then write a file using the repltest meta-language, containing definitions at th
 - : Integer [more precisely: Positive-Byte]
 2
 ```
+
+When the `test` submodule of this file is executed (e.g. with `raco
+test file.rkt`), `repltest` runs the expression after each `> `
+prompt, and check they give the expected result.
