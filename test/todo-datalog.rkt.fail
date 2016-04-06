@@ -1,0 +1,10 @@
+#lang repltest datalog
+parent(amy, anabella).
+parent(john, anabella).
+parent(anabella, jack).
+parent(jack, ted).
+
+grandparent(X, Z) :- parent(X, Y), parent(Y, Z).
+
+> grandparent(X, ted)?
+grandparent(anabella, ted).
