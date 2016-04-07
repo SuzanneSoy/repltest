@@ -57,4 +57,4 @@ script:
 
 after_success:
  - raco pkg install --deps search-auto cover cover-coveralls
- - raco cover -b -f coveralls -d $TRAVIS_BUILD_DIR/coverage .
+ - raco cover --verbose -b -f coveralls -d $TRAVIS_BUILD_DIR/coverage .
