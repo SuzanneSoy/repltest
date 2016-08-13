@@ -1,6 +1,7 @@
 [![Build Status,](https://img.shields.io/travis/jsmaniac/repltest/master.svg)](https://travis-ci.org/jsmaniac/repltest)
 [![Coverage Status,](https://img.shields.io/coveralls/jsmaniac/repltest/master.svg)](https://coveralls.io/github/jsmaniac/repltest)
 [![Build Stats,](https://img.shields.io/badge/build-stats-blue.svg)](http://jsmaniac.github.io/travis-stats/#jsmaniac/repltest)
+[![Online Documentation.](https://img.shields.io/badge/docs-online-blue.svg)](http://docs.racket-lang.org/repltest/)
 
 REPLtest
 ========
