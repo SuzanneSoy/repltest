@@ -87,8 +87,8 @@ the expected output:
 @section{Warning concerning comments}
 
 Comments are not currently supported inside the REPL
-transcript. Also, the current version does not the first
-prompt being preceded by a comment.
+transcript. Also, the current version does not recognise the
+first prompt if it is preceded by a comment.
 
 @section{Warning concerning spaces and newlines}
 
