@@ -13,7 +13,7 @@ series of tests.
 Installation
 ------------
 
-Install thiw package with:
+Install this package with:
 
 ```
 raco pkg install repltest
@@ -22,14 +22,15 @@ raco pkg install repltest
 Usage
 -----
 
-Then write a file using the repltest meta-language, containing
-definitions at the top and interactions after the first prompt (by
-default the prompt is `"> "`, I will add customization options later).
+Write a file using the repltest meta-language, containing definitions at the
+top and interactions after the first prompt (by default the prompt is `"> "`,
+I will add customization options later). Each prompt is followed by a single
+expression and by the expected result.
 
 ```
 #lang debug repltest typed/racket
 ;; There is a problem if there is a comment before a prompt, as comments
-;; are not gobbled-up by the preceeding read. This will be fixed in a
+;; are not gobbled-up by the preceding read. This will be fixed in a
 ;; later version.
 (define x 0)
 (define y 1)
@@ -54,4 +55,4 @@ default the prompt is `"> "`, I will add customization options later).
 
 When the `test` submodule of this file is executed (e.g. with `raco
 test file.rkt`), `repltest` runs the expression after each `> `
-prompt, and check they give the expected result.
+prompt, and checks the expected result is produced.
