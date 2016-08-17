@@ -16,7 +16,7 @@ Installation
 Install this package with:
 
 ```
-raco pkg install repltest
+raco pkg install --deps search-auto repltest
 ```
 
 Usage
