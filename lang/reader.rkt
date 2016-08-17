@@ -49,14 +49,18 @@
     (reader chr (narrow-until-prompt in) src line col pos))
   
   (define/with-syntax (mod nam lang (modbeg . body))
-    (parameterize ([current-namespace (variable-reference->namespace
+    (eval-syntax (replace-top-loc #'(expand #'orig-mod)
+                                    (syntax-source #'here)
+                                    #'orig-mod)
+                   (variable-reference->namespace (#%variable-reference)))
+    #;(parameterize ([current-namespace (variable-reference->namespace
                                        (#%variable-reference))])
       (expand #'orig-mod)))
+  
   ;; quasisyntax/loc Necessary so that the generated code has the correct srcloc
   (replace-top-loc
    #`(mod nam lang
           (modbeg
-           ;(quote-syntax orig-mod)
            (module* test racket/base
              (require repltest/private/run-interactions)
              ;; TODO: set-port-next-location! for (open-input-string …)
