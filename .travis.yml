@@ -59,6 +59,5 @@ script:
  - raco setup --check-pkg-deps --pkgs repltest
 
 after_success:
- #- raco pkg install --deps search-auto cover cover-coveralls
- - raco pkg install --deps search-auto https://github.com/jsmaniac/cover.git#fix-vector-ref-minus-one cover-coveralls
+ - raco pkg install --deps search-auto cover cover-coveralls
  - raco cover --verbose -b -f coveralls -d $TRAVIS_BUILD_DIR/coverage .
