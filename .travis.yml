@@ -27,7 +27,7 @@ env:
     #- RACKET_VERSION=6.1
     #- RACKET_VERSION=6.1.1
     # in v6.2, error "#%module-begin: cannot use identifier tainted by macro transformation" on files which use #lang repltest typed/racket
-    - RACKET_VERSION=6.2
+    #- RACKET_VERSION=6.2
     - RACKET_VERSION=6.3
     - RACKET_VERSION=6.4
     - RACKET_VERSION=6.5
