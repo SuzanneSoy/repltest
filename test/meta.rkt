@@ -1,9 +1,9 @@
-#lang debug repltest typed/racket
+#lang afl repltest typed/racket
 
 ;; There is a problem if there is a comment before a prompt, as comments aren't
 ;; gobbled-up by the preceeding read.
 (define x 0)
-(define (y) #R(- 3 2))
+(define y #λ(list 3 %))
 (define-syntax (module->namespace stx) #'error)
 (provide module->namespace)
 'displayed
@@ -15,11 +15,10 @@
 > x
 - : Integer [more precisely: Zero]
 0
-> (values x (y))
-(- 3 2) = 1
-- : (values Integer Integer) [more precisely: (Values Zero Fixnum)]
+> (values x (y 2))
+- : (values Integer (Listof Any)) [more precisely: (Values Zero (List Positive-Byte Any))]
 0
-1
+'(3 2)
 > (+ 2 0)
 - : Integer [more precisely: Positive-Byte]
 2
