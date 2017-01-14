@@ -81,6 +81,7 @@ the expected output:
  @#,hash-lang[] @#,racketmodname[repltest] @#,racketmodname[typed/racket]
  (define x 0)
  @#,racketid[>] x
+ @#,racketoutput{- : Integer [more precisely: Zero]}
  @#,racketresultfont{0}
  ]
 
