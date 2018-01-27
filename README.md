@@ -2,7 +2,7 @@
 [![Coverage Status,](https://img.shields.io/coveralls/jsmaniac/repltest/master.svg)](https://coveralls.io/github/jsmaniac/repltest)
 [![Build Stats,](https://img.shields.io/badge/build-stats-blue.svg)](http://jsmaniac.github.io/travis-stats/#jsmaniac/repltest)
 [![Online Documentation,](https://img.shields.io/badge/docs-online-blue.svg)](http://docs.racket-lang.org/repltest/)
-[![Maintained as of 2017.](https://img.shields.io/maintenance/yes/2017.svg)](https://github.com/jsmaniac/repltest/issues)
+[![Maintained as of 2018.](https://img.shields.io/maintenance/yes/2018.svg)](https://github.com/jsmaniac/repltest/issues)
 
 REPLtest
 ========
