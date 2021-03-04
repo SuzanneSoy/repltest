@@ -4,7 +4,7 @@
          scriblib/footnote]
 
 @title{REPL test: copy-paste REPL interactions to define tests}
-@author{Georges Dupéron}
+@author{Suzanne Soy}
 
 Source code: @url{https://github.com/jsmaniac/repltest}
 

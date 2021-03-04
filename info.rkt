@@ -8,4 +8,4 @@
 (define scribblings '(("scribblings/repltest.scrbl" ())))
 (define pkg-desc "Copy-paste your REPL interactions, and have them run as tests")
 (define version "0.1")
-(define pkg-authors '(|Georges Dupéron|))
+(define pkg-authors '(|Suzanne Soy|))
